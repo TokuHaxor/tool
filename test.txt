@@ -1,0 +1,125 @@
+import os, re, time, logging
+import multiprocessing.dummy as ThreadPool
+import asyncio, aiohttp, pypeln as pl, requests, json, subprocess, hashlib
+import re, os, getpass
+from colorama import Fore, Style
+
+bl = Fore.BLACK
+wh = Fore.WHITE
+yl = Fore.YELLOW
+red = Fore.RED
+gr = Fore.GREEN
+ble = Fore.BLUE
+
+counter = []
+red = '\x1b[91m'
+green = '\x1b[92m'
+white = '\x1b[00m'
+
+if os.name == 'nt':
+  try:
+    os.system('title Mass Reverse IP Unlimited. ICQ : @xaighost')
+  except:
+    pass
+
+def clear():
+    linux = 'clear'
+    windows = 'cls'
+    os.system([linux, windows][(os.name == 'nt')])  
+
+def createFolder(directory):
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+    except OSError:
+        print ('Error: Creating directory. ' +  directory)
+createFolder('Result')
+
+async def exp(s, count_per_ip, i):
+    try:
+        if s != '[]':
+            resp = json.loads(s)["result"]
+            count_per_ip = len(resp)
+            counter.append(count_per_ip)
+            for a in resp:
+                with open('Result\Result.txt', 'a') as (res):
+                    res.write(str(a) + '\n')
+
+    except:
+        count_per_ip = 0
+
+    print("\033[94mReversing  \033[91m=>> \033[1;33;40m " +str(i)+ " > \033[92m[ Total " +str(count_per_ip)+ " Domnain ]")
+
+
+async def taz(i):
+    try:
+        i = i.replace('\n', '').replace('\r', '').replace('http://', '').replace('https://', '')
+        api = 'https://reverseip-tools.com/api?q=' + str(i)
+        count_per_ip = 0
+        connector = aiohttp.TCPConnector(limit=60, ssl=False)
+        async with aiohttp.ClientSession(connector=connector) as s:
+            async with s.get(api) as resp:
+                content = await resp.text()
+                await exp(content, count_per_ip, i)
+    except Exception as e:
+        try:
+            print(str(e))
+        finally:
+            e = None
+            del e
+
+clear()
+def banner():
+    print(f'''{wh}    
+                                                     {red}  
+d8888b. d88888b db    db d888888b d8888b.      db    db .d888b. {ble}
+88  `8D 88'     88    88   `88'   88  `8D      88    88 VP  `8D 
+88oobY' 88ooooo Y8    8P    88    88oodD'      Y8    8P    odD' {gr}
+88`8b   88~~~~~ `8b  d8'    88    88~~~        `8b  d8'  .88'   
+88 `88. 88.      `8bd8'    .88.   88            `8bd8'  j88.    {yl}
+88   YD Y88888P    YP    Y888888P 88              YP    888888D 
+
+PT. Bot Jaya Abadi
+Author : xaighost
+Telegram : @xaighost_real                
+''')
+
+if __name__ == '__main__':
+    clear()
+    banner()
+    Passwd = getpass.getpass('\033[0;40mLicense : ')
+    pwn = requests.get('https://pastebin.com/raw/L6U6yiY5', verify=False, timeout=7).text
+    pwn = str(pwn)
+    if pwn in Passwd:
+        print('\033[1;33;40m>> \x1b[92mLicense Valid, Welcome to My tools\x1b[90m')
+        time.sleep(2)
+        clear()
+        banner()
+        ListPass = open(input('List :'), 'r')
+        t = time.perf_counter()
+        print('For Best Usage Use 100++ Speed')
+        speed = input('Speed :')
+        pl.task.each(taz, ListPass, workers=(int(speed)), run=True)
+        t2 = time.perf_counter() - t
+        print(f"total time taken: {t2:0.2f} seconds")
+    else:
+        from tkinter import *
+        import tkinter.messagebox
+
+        root = Tk()
+
+        root.geometry("400x150")
+
+        def Message():
+            answer = tkinter.messagebox.askquestion("WHO ARE YOU", 'Contact Admin For License. Telegram : @xaighost')
+
+        button = Button(root, text="Show Message", command=Message)
+        button.pack(pady=20)
+
+        root.mainloop()
+
+x = input('Finished, enter to exit!')
+if 'i' not in x:
+    sys.exit()
+else:
+    sys.exit()
