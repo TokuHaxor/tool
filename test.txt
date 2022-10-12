@@ -1,1 +1,199 @@
-GADA NJENG
+import requests
+import urllib3
+import re
+import time
+import random
+import sys
+import os
+import getpass
+import socket
+import argparse
+from colorama import Fore, Back, Style, init
+from multiprocessing.dummy import Pool
+
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
+
+if os.path.exists("result"):
+    pass
+else:
+    os.mkdir("./result")
+arg = argparse.ArgumentParser()
+
+
+def logo():
+    init()
+    colors = list(vars(Fore).values())
+    logo = """
+Tested on by Xaighost
+   """
+    for line in logo.splitlines():
+        print("".join(colors[random.randint(1, len(colors)-1)] + tcolor(line)))
+        time.sleep(0.05)
+
+
+def tcolor(text): return text.format(
+    w=Fore.WHITE, g=Fore.GREEN, r=Fore.RED, y=Fore.YELLOW, b=Fore.BLUE)
+
+
+def tpinfo(t, m): print(tcolor(" {w}" + t + "{w} " + m))
+def tinpt(t): return input(tcolor(" {w}{b}+{w} {y}" + t + " {w}> "))
+def tperr(u, m): print('\033[0;37m'+u + " \033[31;1m=> " + m + "" )
+def tpsucc(u, c): print('\033[0;37m'+u + " \033[32;1m=> " + str(c) + ""  )
+
+
+def options():
+    global arg
+    arg.add_argument("sitelists", nargs="?",
+                     help="yourlist ( ex: blabla.txt )")
+    arg.add_argument("-t", dest="thread",
+                     help="set thread ( default: 100 )", default=100)
+    arg.add_argument("-rev", action='store_true',
+                     help="start reverse ip tools")
+    arg.add_argument("-cmscheck", action='store_true', help="start cmscheck checker")
+    args = arg.parse_args()
+    if len(sys.argv) != 1 and args.sitelists:
+        return args
+    print(arg.print_help())
+    return 0
+
+
+class TroyaMain:
+    results = {"reversed": []}
+
+    def __init__(self, arg):
+        self.thread = int(arg.thread)
+        self.sites = arg.sitelists
+        self.arg = arg
+
+    def uparse(self, url):
+        url = url.replace("\n", "").replace("\r", "")
+        if not url.startswith("http"):
+            url = "http://" + url
+        return urlparse(url)
+
+    def execute(self):
+        if self.arg.rev:
+            tpinfo("{b}", "Loading list......\n")
+            self.results["reversed"] = ReverseIP(self.arg).execute()
+        if self.arg.cmscheck:
+            if self.arg.rev:
+                tpinfo("{b}!", "Start CMS Checker\n")
+                if self.results['reversed']:
+                    cmscheckChecker(self.arg, self.results["reversed"]).execute()
+                else:
+                    tpinfo("{r}x", "the reversed site is none\n")
+            else:
+                tpinfo("{b}!", "starting cmscheck check tools\n")
+                cmscheckChecker(self.arg, self.sites).execute()
+
+
+class cmscheckChecker (TroyaMain):
+    def __init__(self, arg, sites):
+        super().__init__(arg)
+        self.sites = sites
+        if os.path.exists("result/cmscheck"):
+            pass
+        else:
+            os.mkdir("./result/cmscheck")
+
+    def cmscheckP(self, url):
+        domain = super().uparse(url).netloc
+        url = super().uparse(url).scheme + "://" + domain + super().uparse(url).path
+        try:
+            socket.gethostbyname(domain)
+            result = requests.get(url, timeout=10)
+            result2 = result.text
+            cmscheck = ""
+            if 'laravel_session' in result.cookies:
+                cmscheck = "laravel"
+            elif "/wp-content/" in result2:
+                cmscheck = "wordpress"
+            elif "Joomla" in result2 and 'com_' in result2:
+                cmscheck = "joomla"
+            elif "osCsid" in result2 or "ui-widget infoBoxContainer" in result2:
+                cmscheck = "oscomerce"
+            elif "/modules/ps_imageslider/" in result2:
+                cmscheck = "drupal"
+            elif "prestashop" in result2:
+                cmscheck = "prestashop"
+            elif 'id="vb-page-body"' in result2 or "vBulletin" in result2:
+                cmscheck = "vbuletin"
+            elif "index.php?route=" in result2:
+                cmscheck = "opencart"
+            elif 'Mage.Cookies' in result2 or "text/x-magento-init" in result2:
+                cmscheck = "magento"
+            else:
+                return 0
+            tpsucc(domain, cmscheck.upper())
+            open("result/cmscheck/" + cmscheck + ".txt", "a").write(url + "\n")
+        except:
+            tperr(domain, "ERROR")
+
+    def execute(self):
+        pool = Pool(self.thread)
+        pool.map(self.cmscheckP, self.sites)
+        pool.close()
+        pool.join()
+        print("\r\n")
+        tpinfo("{b}!", "cmscheck checker done")
+
+
+class ReverseIP (TroyaMain):
+    total = []
+    tmp = []
+    def __init__(self, arg): super().__init__(arg)
+
+    def revP(self, url):
+        try:
+            domain = super().uparse(url).netloc
+            ip = socket.gethostbyname(domain)
+            if ip in self.tmp:
+                return tperr(url, "Same IP")
+            self.tmp.append(ip)
+            result = requests.get(
+                "http://tr0yacrew.herokuapp.com/rev/7/" + ip, timeout=10).json()
+            if result['status'] == 200:
+                for site in result['result']:
+                    open("result/rev.txt", "a").write(site + "\n")
+                    self.total.append(site)
+                tpsucc(domain, str(len(result['result'])) + " Domains")
+            else:
+                tperr(domain, "ERROR")
+        except:
+            tperr(domain, "ERROR")
+
+    def execute(self):
+        pool = Pool(self.thread)
+        pool.map(self.revP, self.sites)
+        pool.close()
+        pool.join()
+        print("\r\n")
+        tpinfo("{b}!", "reverse done {g}" +
+               str(len(self.total)) + "{w} sites total")
+        return self.total
+
+
+if __name__ == "__main__":
+    Passwd = getpass.getpass('\033[0;40mLicense : ')
+    pwn = requests.get('https://pastebin.com/raw/jneEGrM8', verify=False, timeout=7).text
+    pwn = str(pwn)
+    if pwn in Passwd:
+            try:
+                logo()
+                args = options()
+                if args:
+                    tpinfo("{b}", "Waiting")
+                    if not os.path.exists(args.sitelists):
+                        tpinfo("{r}", "List Not Found")
+                        exit()
+                    else:
+                        args.sitelists = open(args.sitelists, "r").read().splitlines()
+                        troya = TroyaMain(args)
+                        tpinfo("{b}", "Connect in server\n")
+                        troya.execute()
+            except KeyboardInterrupt:
+                tpinfo("{b}!", "CTRL + C Exit!!")
+
