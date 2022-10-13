@@ -154,7 +154,7 @@ class ReverseIP (TroyaMain):
                 return tperr(url, "Same IP")
             self.tmp.append(ip)
             result = requests.get(
-                "http://tr0yacrew.herokuapp.com/rev/7/" + ip, timeout=10).json()
+                "http://tr0yacrew.herokuapp.com/rev/7/" + ip, timeout=20).json()
             if result['status'] == 200:
                 for site in result['result']:
                     open("result/rev.txt", "a").write(site + "\n")
