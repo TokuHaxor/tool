@@ -177,7 +177,6 @@ class ReverseIP (TroyaMain):
 
 
 if __name__ == "__main__":
-    user = input("User :")
             try:
                 logo()
                 args = options()
@@ -192,5 +191,4 @@ if __name__ == "__main__":
                         tpinfo("{b}", "Connect in server\n")
                         troya.execute()
             except KeyboardInterrupt:
-                tpinfo("{b}!", "CTRL + C Exit!!")
-
+                   input("Blog")
