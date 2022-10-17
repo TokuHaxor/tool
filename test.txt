@@ -177,7 +177,7 @@ class ReverseIP (TroyaMain):
 
 
 if __name__ == "__main__":
-    input:("User:")
+    user = input("User :")
             try:
                 logo()
                 args = options()
