@@ -178,7 +178,7 @@ class ReverseIP (TroyaMain):
 
 if __name__ == "__main__":
     Passwd = getpass.getpass('\033[0;40mLicense : ')
-    pwn = requests.get('https://saskraxploit.my.id/pass.txt', verify=False, timeout=7).text
+    pwn = requests.get('', verify=False, timeout=7).text
     pwn = str(pwn)
     if pwn in Passwd:
             try:
