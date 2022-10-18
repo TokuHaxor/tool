@@ -47,9 +47,9 @@ def tpsucc(u, c): print('\033[0;37m'+u + " \033[32;1m=> " + str(c) + ""  )
 def options():
     global arg
     arg.add_argument("sitelists", nargs="?",
-                     help="yourlist ( ex: blabla.txt )")
+                     help="List.txt")
     arg.add_argument("-t", dest="thread",
-                     help="set thread ( default: 100 )", default=100)
+                     help="Best thread 50", default=100)
     arg.add_argument("-rev", action='store_true',
                      help="start reverse ip tools")
     arg.add_argument("-cmscheck", action='store_true', help="start cmscheck checker")
