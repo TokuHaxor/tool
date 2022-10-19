@@ -27,7 +27,18 @@ def logo():
     init()
     colors = list(vars(Fore).values())
     logo = """
-Tested on by Xaighost
+
+ ██▓███   ██▀███   ██▓ ██▒   █▓ ██▀███  ▓█████ ██▒   █▓
+▓██░  ██▒▓██ ▒ ██▒▓██▒▓██░   █▒▓██ ▒ ██▒▓█   ▀▓██░   █▒
+▓██░ ██▓▒▓██ ░▄█ ▒▒██▒ ▓██  █▒░▓██ ░▄█ ▒▒███   ▓██  █▒░
+▒██▄█▓▒ ▒▒██▀▀█▄  ░██░  ▒██ █░░▒██▀▀█▄  ▒▓█  ▄  ▒██ █░░
+▒██▒ ░  ░░██▓ ▒██▒░██░   ▒▀█░  ░██▓ ▒██▒░▒████▒  ▒▀█░  
+▒▓▒░ ░  ░░ ▒▓ ░▒▓░░▓     ░ ▐░  ░ ▒▓ ░▒▓░░░ ▒░ ░  ░ ▐░  
+░▒ ░       ░▒ ░ ▒░ ▒ ░   ░ ░░    ░▒ ░ ▒░ ░ ░  ░  ░ ░░  
+░░         ░░   ░  ▒ ░     ░░    ░░   ░    ░       ░░  
+            ░      ░        ░     ░        ░  ░     ░  
+                           ░                       ░   
+
    """
     for line in logo.splitlines():
         print("".join(colors[random.randint(1, len(colors)-1)] + tcolor(line)))
@@ -46,13 +57,13 @@ def tpsucc(u, c): print('\033[0;37m'+u + " \033[32;1m=> " + str(c) + ""  )
 
 def options():
     global arg
-    arg.add_argument("sitelists", nargs="?",
+    arg.add_argument("List", nargs="?",
                      help="List.txt")
     arg.add_argument("-t", dest="thread",
                      help="Best thread 50", default=100)
     arg.add_argument("-rev", action='store_true',
-                     help="start reverse ip tools")
-    arg.add_argument("-cmscheck", action='store_true', help="start cmscheck checker")
+                     help="Start Reversing")
+    arg.add_argument("-cmscheck", action='store_true', help="Start Cmscheck")
     args = arg.parse_args()
     if len(sys.argv) != 1 and args.sitelists:
         return args
