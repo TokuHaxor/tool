@@ -65,7 +65,7 @@ def options():
                      help="Start Reversing")
     arg.add_argument("-cmscheck", action='store_true', help="Start Cmscheck")
     args = arg.parse_args()
-    if len(sys.argv) != 1 and args.sitelists:
+    if len(sys.argv) != 1 and args.List:
         return args
     print(arg.print_help())
     return 0
@@ -76,7 +76,7 @@ class TroyaMain:
 
     def __init__(self, arg):
         self.thread = int(arg.thread)
-        self.sites = arg.sitelists
+        self.sites = arg.List
         self.arg = arg
 
     def uparse(self, url):
@@ -193,11 +193,11 @@ if __name__ == "__main__":
                 args = options()
                 if args:
                     tpinfo("{b}", "Waiting")
-                    if not os.path.exists(args.sitelists):
+                    if not os.path.exists(args.List):
                         tpinfo("{r}", "List Not Found")
                         exit()
                     else:
-                        args.sitelists = open(args.sitelists, "r").read().splitlines()
+                        args.List = open(args.List, "r").read().splitlines()
                         troya = TroyaMain(args)
                         tpinfo("{b}", "Connect in server\n")
                         troya.execute()
